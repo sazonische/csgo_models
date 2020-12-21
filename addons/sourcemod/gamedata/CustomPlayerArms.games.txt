@@ -1,0 +1,25 @@
+"Games"
+{
+	"csgo"
+	{
+		"Addresses"
+		{
+			"s_playerViewmodelArmConfigs"
+			{
+				"signature" "GetPlayerViewmodelArmConfigForPlayerModel"
+				"linux"
+				{
+					"read"  "2"
+				}
+			}
+		}
+		"Signatures"
+		{
+			"GetPlayerViewmodelArmConfigForPlayerModel"
+			{
+				"library"		"server"
+				"linux"			"\x55\xB8\x2A\x2A\x2A\x2A\x89\xE5\x57\x56\x53\x83\xEC\x1C\x8B\x7D\x08\x85\xFF\x74\x2A\x89\xC6"
+			}
+		}
+	}
+}

@@ -1,0 +1,48 @@
+"Phrases"
+{
+	"Models menu"
+	{
+		"en"		"Models menu"
+		"ru"		"Меню моделей"		
+	}
+	"Select model"
+	{
+		"en"		"Select model"
+		"ru"		"Выбрать модель"		
+	}
+	"Next"
+	{
+		"en"		"Next"
+		"ru"		"Далее"		
+	}
+	"Back"
+	{
+		"en"		"Back"
+		"ru"		"Назад"		
+	}
+	"Remove model"
+	{
+		"en"		"Remove model"
+		"ru"		"Убрать модель"		
+	}
+	"Only to privileged players"
+	{
+		"en"		"The model is available only to privileged players."
+		"ru"		"Модель доступна только привилегированным игрокам."		
+	}
+	"Only available in the purchase area"
+	{
+		"en"		"Model selection is only available in the purchase area."
+		"ru"		"Выбор модели доступен только в зоне закупки."		
+	}
+	"Time to choose is up"
+	{
+		"en"		"Time to choose a skin is up."
+		"ru"		"Время на выбор скина вышло."		
+	}
+	"Del arms announce"
+	{
+		"en"		"Turn off the gloves in the inventory for the model's gloves to work."
+		"ru"		"Отключите перчатки в инвентаре для работы перчаток модели."		
+	}
+}

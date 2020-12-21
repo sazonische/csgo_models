@@ -1,0 +1,13 @@
+"Phrases"
+{
+	"Standard"
+	{
+		"en"		"Standard"
+		"ru"		"Стандартная"		
+	}
+	"Mila"
+	{
+		"en"		"Mila"
+		"ru"		"Мила"		
+	}
+}
