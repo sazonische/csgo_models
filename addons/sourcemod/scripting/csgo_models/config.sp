@@ -4,7 +4,7 @@ public void ReadModelsCfg() {
 	if(!FileExists(szPath))
 		SetFailState("Config file '%s' was not found", szPath);
 	
-	KeyValues ModelsConfig = new KeyValues("Skins");
+	KeyValues ModelsConfig = new KeyValues("model_players");
 	
 	if(!ModelsConfig.ImportFromFile(szPath))
 		SetFailState("Error parsing config file '%s'", szPath);
