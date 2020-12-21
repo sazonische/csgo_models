@@ -45,7 +45,6 @@ public Action Command_Say(int iClient, const char[] command, int argc) {
 
 	if(!IsPlayerAlive(iClient))
 		return Plugin_Continue;
-
 	static char sModelsMenuCmds[][] = {".models","!models","models"};
 
 	char sBuffer[24];
@@ -55,7 +54,11 @@ public Action Command_Say(int iClient, const char[] command, int argc) {
 
 	for(int i = 0; i < sizeof(sModelsMenuCmds); i++) {
 		if(strcmp(sBuffer, sModelsMenuCmds[i], false) == 0) {
-			if(g_CvarByzoneOnly.BoolValue && !GetEntProp(iClient, Prop_Send, "m_bInBuyZone")) {			
+			if(!(GetEntityFlags(iClient) & FL_ONGROUND)) {
+				PrintCenterText(iClient, "%t", "Only the ground");
+				ClientCommand(iClient, "play player/suit_denydevice.wav");
+				return Plugin_Continue;
+			} else if(g_CvarByzoneOnly.BoolValue && !GetEntProp(iClient, Prop_Send, "m_bInBuyZone")) {			
 				PrintCenterText(iClient, "%t", "Only available in the purchase area");
 				ClientCommand(iClient, "play player/suit_denydevice.wav");
 				return Plugin_Continue;
