@@ -1,6 +1,6 @@
 ArrayList g_aModelslist[4];
 Menu g_ModelsMenu = null;
-ConVar mp_forcecamera, g_CvarSkinSelectTime = null, g_CvarBuyZoneOnly = null;
+ConVar mp_forcecamera, g_CvarSkinSelectTime = null, g_CvarBuyZoneOnly = null, g_CvarMapChangeReloadCfg = null;
 Handle g_hSkinTimer = null, g_hCookieT = null, g_hCookieCT = null;
 
 #if ARMS_FIX

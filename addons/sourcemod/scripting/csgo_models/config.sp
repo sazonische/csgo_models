@@ -13,12 +13,13 @@ public void ReadModelsCfg() {
 	while(DownloadsDirectory.GetNext(szDownloadsFile, PLATFORM_MAX_PATH, DownloadsType)) {
 		if(DownloadsType != FileType_File || !StrEqual(szDownloadsFile[strlen(szDownloadsFile)-4], ".cfg", false))
 			continue;
-		
-		PrintToServer("%s", szDownloadsFile);
 		BuildPath(Path_SM, szDownloadsPath, PLATFORM_MAX_PATH, "configs/csgo_models_downloads/%s", szDownloadsFile);
 		ReadDownloadList(szDownloadsPath);
 	}
 	delete DownloadsDirectory;
+
+	if(!g_CvarMapChangeReloadCfg.BoolValue) // Reload the settings config when changing the map?
+		return;
 
 	// ReadConfigList
 	char[] szConfigsPath = new char[PLATFORM_MAX_PATH];
@@ -36,7 +37,6 @@ public void ReadModelsCfg() {
 	while(ConfigsDirectory.GetNext(szConfigsFile, PLATFORM_MAX_PATH, ConfigsType)) {
 		if(ConfigsType != FileType_File || !StrEqual(szConfigsFile[strlen(szConfigsFile)-4], ".cfg", false))
 			continue;
-		PrintToServer("%s", szConfigsFile);
 		BuildPath(Path_SM, szConfigsPath, PLATFORM_MAX_PATH, "configs/csgo_models_configs/%s", szConfigsFile);
 		ReadConfigList(szConfigsPath);
 	}
