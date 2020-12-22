@@ -20,6 +20,9 @@ int ModelsMenu(Menu menu, MenuAction action, int iClient, int iParam) {
 	Modelslist info;
 	int iClientTeam = GetClientTeam(iClient);
 	int iActiveModelPos = g_sModelSettings.GetModelListPos(iClientTeam,iClient);
+	if(!g_sModelSettings.IsValidModelPos(iClient,iClientTeam))
+		iActiveModelPos = 0;
+
 	g_sModelSettings.GetModelArrayList(iClientTeam).GetArray(iActiveModelPos, info);
 
 	switch (action) {

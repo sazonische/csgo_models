@@ -29,6 +29,10 @@ enum struct ModelSettings {
 		return g_aModelslist[iTeam].Length;
 	}
 
+	bool IsValidModelPos(int iClient, int iTeam) {
+		return (this.CtModelPos[iClient] <= (g_aModelslist[iTeam].Length -1));
+	}
+
 	int GetModelListPos(int iTeam, int iClient) {
 		return (iTeam == CS_TEAM_CT) ? this.CtModelPos[iClient] : this.TmodelPos[iClient];
 	}

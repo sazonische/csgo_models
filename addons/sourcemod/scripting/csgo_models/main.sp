@@ -111,7 +111,11 @@ public Action MdlCh_PlayerSpawn(int iClient, bool bCustom, char[] sModel, int iM
 
 	Modelslist info;
 	int iClientTeam = GetClientTeam(iClient);
-	g_sModelSettings.GetModelArrayList(iClientTeam).GetArray(g_sModelSettings.GetModelListPos(iClientTeam,iClient), info);
+	int iActiveModelPos = g_sModelSettings.GetModelListPos(iClientTeam,iClient);
+	if(!g_sModelSettings.IsValidModelPos(iClient,iClientTeam))
+		iActiveModelPos = 0;
+
+	g_sModelSettings.GetModelArrayList(iClientTeam).GetArray(iActiveModelPos, info);
 
 	if(bCustom && !info.model_player[0])
 		return Plugin_Continue;
