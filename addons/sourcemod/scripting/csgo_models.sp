@@ -41,8 +41,9 @@ public void OnPluginStart() {
 	g_hCookieT = RegClientCookie("sm_model_id_t", "Terrorists Skins", CookieAccess_Private);
 	g_hCookieCT = RegClientCookie("sm_model_id_ct", "Counter-Terrorists Skins", CookieAccess_Private);
 
+	RegAdminCmd("sm_reloadmodels", ReloadModels, ADMFLAG_CHANGEMAP);
 	mp_forcecamera = FindConVar("mp_forcecamera");
-	g_CvarByzoneOnly = CreateConVar("sm_byzone_only", "1", "Allow model selection only in the byzone.", 0, true, 0.0, true, 1.0);
+	g_CvarBuyZoneOnly = CreateConVar("sm_buyzone_only", "1", "Allow model selection only in the buyzone.", 0, true, 0.0, true, 1.0);
 	g_CvarSkinSelectTime = CreateConVar("sm_select_skin_time", "55.0", "After how many seconds to disable the model selection. '0 disable timer'", 0, true, 0.0);
 	AutoExecConfig(true, "csgo_models");
 }

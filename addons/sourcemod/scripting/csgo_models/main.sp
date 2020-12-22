@@ -58,7 +58,7 @@ public Action Command_Say(int iClient, const char[] command, int argc) {
 				PrintCenterText(iClient, "%t", "Only the ground");
 				ClientCommand(iClient, "play player/suit_denydevice.wav");
 				return Plugin_Continue;
-			} else if(g_CvarByzoneOnly.BoolValue && !GetEntProp(iClient, Prop_Send, "m_bInBuyZone")) {			
+			} else if(g_CvarBuyZoneOnly.BoolValue && !GetEntProp(iClient, Prop_Send, "m_bInBuyZone")) {			
 				PrintCenterText(iClient, "%t", "Only available in the purchase area");
 				ClientCommand(iClient, "play player/suit_denydevice.wav");
 				return Plugin_Continue;
@@ -100,7 +100,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 
 public Action Event_ExitBuyzone(Event event, const char[] name, bool dontBroadcast) {
 	int iClient = GetClientOfUserId(event.GetInt("userid"));
-	if(g_CvarByzoneOnly.BoolValue && IsValidClient(iClient) && g_sModelSettings.OpenModelsMenu[iClient])
+	if(g_CvarBuyZoneOnly.BoolValue && IsValidClient(iClient) && g_sModelSettings.OpenModelsMenu[iClient])
 		CancelClientMenu(iClient);
 	return Plugin_Continue;
 }
@@ -170,6 +170,10 @@ public void LoadArmsReplace() {
 	}
 }
 #endif
+
+public Action ReloadModels(int client, int args) {
+	ReadModelsCfg();
+}
 
 stock bool IsValidClient(int client) {
 	return 0 < client && client <= MaxClients && IsClientInGame(client) && !IsFakeClient(client);
