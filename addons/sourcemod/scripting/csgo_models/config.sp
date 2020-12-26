@@ -3,19 +3,16 @@ public void ReadModelsCfg() {
 	char[] szDownloadsPath = new char[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szDownloadsPath, PLATFORM_MAX_PATH, "configs/csgo_models_downloads/");
 	DirectoryListing DownloadsDirectory = OpenDirectory(szDownloadsPath);
-	if(DownloadsDirectory == null) {
-		LogError("Error opening directory \"%s\"", szDownloadsPath);
-		return;
-	}
-	
-	char[] szDownloadsFile = new char[PLATFORM_MAX_PATH];
-	FileType DownloadsType;
-	while(DownloadsDirectory.GetNext(szDownloadsFile, PLATFORM_MAX_PATH, DownloadsType)) {
-		if(DownloadsType != FileType_File || !StrEqual(szDownloadsFile[strlen(szDownloadsFile)-4], ".cfg", false))
-			continue;
-		BuildPath(Path_SM, szDownloadsPath, PLATFORM_MAX_PATH, "configs/csgo_models_downloads/%s", szDownloadsFile);
-		ReadDownloadList(szDownloadsPath);
-	}
+	if(DownloadsDirectory != null) {
+		char[] szDownloadsFile = new char[PLATFORM_MAX_PATH];
+		FileType DownloadsType;
+		while(DownloadsDirectory.GetNext(szDownloadsFile, PLATFORM_MAX_PATH, DownloadsType)) {
+			if(DownloadsType != FileType_File || !StrEqual(szDownloadsFile[strlen(szDownloadsFile)-4], ".cfg", false))
+				continue;
+			BuildPath(Path_SM, szDownloadsPath, PLATFORM_MAX_PATH, "configs/csgo_models_downloads/%s", szDownloadsFile);
+			ReadDownloadList(szDownloadsPath);
+		}
+	} else LogError("Error opening directory \"%s\"", szDownloadsPath);
 	delete DownloadsDirectory;
 
 	if(!g_CvarMapChangeReloadCfg.BoolValue) // Reload the settings config when changing the map?
