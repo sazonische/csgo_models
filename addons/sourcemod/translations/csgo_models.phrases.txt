@@ -45,4 +45,9 @@
 		"en"		"Turn off the gloves in the inventory for the model's gloves to work."
 		"ru"		"Отключите перчатки в инвентаре для работы перчаток модели."		
 	}
+	"Del arms announce"
+	{
+		"en"		"Model selection is only available to live players."
+		"ru"		"Выбор модели доступен только живым игрокам."		
+	}
 }

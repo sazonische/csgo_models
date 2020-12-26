@@ -43,8 +43,6 @@ public Action Command_Say(int iClient, const char[] command, int argc) {
 	if(!IsValidClient(iClient))
 		return Plugin_Continue;
 
-	if(!IsPlayerAlive(iClient))
-		return Plugin_Continue;
 	static char sModelsMenuCmds[][] = {".models","!models","models"};
 
 	char sBuffer[24];
@@ -54,7 +52,11 @@ public Action Command_Say(int iClient, const char[] command, int argc) {
 
 	for(int i = 0; i < sizeof(sModelsMenuCmds); i++) {
 		if(strcmp(sBuffer, sModelsMenuCmds[i], false) == 0) {
-			if(!(GetEntityFlags(iClient) & FL_ONGROUND)) {
+			if(!IsPlayerAlive(iClient)) {
+				PrintCenterText(iClient, "%t", "Only alive select nodel");
+				ClientCommand(iClient, "play player/suit_denydevice.wav");
+				return Plugin_Continue;
+			} else if(!(GetEntityFlags(iClient) & FL_ONGROUND)) {
 				PrintCenterText(iClient, "%t", "Only the ground");
 				ClientCommand(iClient, "play player/suit_denydevice.wav");
 				return Plugin_Continue;
