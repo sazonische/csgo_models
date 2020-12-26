@@ -11,6 +11,7 @@ public void OnClientCookiesCached(int iClient) {
 	if(!IsValidClient(iClient))
 		return;
 
+	g_sModelSettings.OpenModelsMenu[iClient] = false;
 	g_sModelSettings.CtModelPos[iClient] = 0;
 	g_sModelSettings.TmodelPos[iClient] = 0;
 
