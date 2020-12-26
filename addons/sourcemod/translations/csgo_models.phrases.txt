@@ -22,8 +22,8 @@
 	}
 	"Remove model"
 	{
-		"en"		"Remove model"
-		"ru"		"Убрать модель"		
+		"en"		"The default model."
+		"ru"		"Модель по умолчанию."		
 	}
 	"Only to privileged players"
 	{
