@@ -1,6 +1,6 @@
 ArrayList g_aModelslist[4];
 Menu g_ModelsMenu = null;
-ConVar mp_forcecamera, g_CvarSkinSelectTime = null, g_CvarBuyZoneOnly = null, g_CvarMapChangeReloadCfg = null;
+ConVar mp_forcecamera, mp_playercashawards, mp_teamcashawards, g_CvarSkinSelectTime = null, g_CvarBuyZoneOnly = null, g_CvarMapChangeReloadCfg = null;
 Handle g_hSkinTimer = null, g_hCookieT = null, g_hCookieCT = null;
 
 #if ARMS_FIX
@@ -45,22 +45,33 @@ enum struct ModelSettings {
 	}
 
 	void SetThirdPersonView(int iClient, bool bDraw) {
+		static const int HIDE_RADAR_CSGO = 1 << 12, HIDE_CROSSHAIR_CSGO = 1<<8;
 		if(bDraw) {
 			SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", 0); 
 			SetEntProp(iClient, Prop_Send, "m_iObserverMode", 1);
 			SetEntProp(iClient, Prop_Send, "m_bDrawViewmodel", 0);
 			SetEntProp(iClient, Prop_Send, "m_iFOV", 120);
 			mp_forcecamera.ReplicateToClient(iClient,"1");
-			SetEntPropFloat(iClient, Prop_Data, "m_flLaggedMovementValue", 0.0);	
+			mp_playercashawards.ReplicateToClient(iClient,"0");
+			mp_teamcashawards.ReplicateToClient(iClient,"0");
+			SetEntPropFloat(iClient, Prop_Data, "m_flLaggedMovementValue", 0.0);
+			SetEntProp(iClient, Prop_Send, "m_iHideHUD", GetEntProp(iClient, Prop_Send, "m_iHideHUD") | HIDE_RADAR_CSGO);
+			SetEntProp(iClient, Prop_Send, "m_iHideHUD", GetEntProp(iClient, Prop_Send, "m_iHideHUD") | HIDE_CROSSHAIR_CSGO);
 		} else {
 			SetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget", -1);
 			SetEntProp(iClient, Prop_Send, "m_iObserverMode", 0);
 			SetEntProp(iClient, Prop_Send, "m_bDrawViewmodel", 1);
 			SetEntProp(iClient, Prop_Send, "m_iFOV", 90);
-			char sCamMode[2];
-			IntToString(mp_forcecamera.IntValue, sCamMode, sizeof sCamMode);
-			mp_forcecamera.ReplicateToClient(iClient, sCamMode);
-			SetEntPropFloat(iClient, Prop_Data, "m_flLaggedMovementValue", 1.0);	
+			char sCvar[2];
+			IntToString(mp_forcecamera.IntValue, sCvar, sizeof sCvar);
+			mp_forcecamera.ReplicateToClient(iClient, sCvar);
+			IntToString(mp_playercashawards.IntValue, sCvar, sizeof sCvar);
+			mp_playercashawards.ReplicateToClient(iClient, sCvar);
+			IntToString(mp_teamcashawards.IntValue, sCvar, sizeof sCvar);
+			mp_teamcashawards.ReplicateToClient(iClient, sCvar);
+			SetEntPropFloat(iClient, Prop_Data, "m_flLaggedMovementValue", 1.0);
+			SetEntProp(iClient, Prop_Send, "m_iHideHUD", GetEntProp(iClient, Prop_Send, "m_iHideHUD") & ~HIDE_RADAR_CSGO);
+			SetEntProp(iClient, Prop_Send, "m_iHideHUD", GetEntProp(iClient, Prop_Send, "m_iHideHUD") & ~HIDE_CROSSHAIR_CSGO);	
 		}
 	}
 	
