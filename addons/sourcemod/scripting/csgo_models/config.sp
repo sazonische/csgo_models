@@ -85,7 +85,7 @@ public void ReadConfigList(const char[] sPath) {
 			ModelsConfig.GetString("model_player", info.model_player, sizeof info.model_player);
 			ModelsConfig.GetString("vo_prefix", info.vo_prefix, sizeof info.vo_prefix);
 			ModelsConfig.GetString("arms", info.arms, sizeof info.arms);
-			if(info.arms[0]) PrecacheModel(info.arms[0]);
+			if(info.arms[0]) PrecacheModel(info.arms);
 			char sFlags[16];
 			ModelsConfig.GetString("flags", sFlags, sizeof sFlags);
 			info.flags = ReadFlagString(sFlags);
@@ -102,7 +102,7 @@ public void ReadConfigList(const char[] sPath) {
 			ModelsConfig.GetString("model_player", info.model_player, sizeof info.model_player);
 			ModelsConfig.GetString("vo_prefix", info.vo_prefix, sizeof info.vo_prefix);
 			ModelsConfig.GetString("arms", info.arms, sizeof info.arms);
-			if(info.arms[0]) PrecacheModel(info.arms[0]);
+			if(info.arms[0]) PrecacheModel(info.arms);
 			char sFlags[16];
 			ModelsConfig.GetString("flags", sFlags, sizeof sFlags);
 			info.flags = ReadFlagString(sFlags);
