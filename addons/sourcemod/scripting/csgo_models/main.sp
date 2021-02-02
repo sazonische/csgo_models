@@ -12,16 +12,12 @@ public void OnClientCookiesCached(int iClient) {
 		return;
 
 	g_sModelSettings.OpenModelsMenu[iClient] = false;
-	g_sModelSettings.CtModelPos[iClient] = 0;
-	g_sModelSettings.TmodelPos[iClient] = 0;
 
 	char szInfo[PLATFORM_MAX_PATH];
 	GetClientCookie(iClient, g_hCookieCT, szInfo, sizeof szInfo);
-	if(szInfo[0])
-		g_sModelSettings.CtModelPos[iClient] = StringToInt(szInfo);
+	g_sModelSettings.CtModelPos[iClient] = szInfo[0] ? StringToInt(szInfo) : 0;
 	GetClientCookie(iClient, g_hCookieT, szInfo, sizeof szInfo);
-	if(szInfo[0])
-		g_sModelSettings.TmodelPos[iClient] = StringToInt(szInfo);
+	g_sModelSettings.TmodelPos[iClient] = szInfo[0] ? StringToInt(szInfo) : 0;
 }
 
 public void OnClientDisconnect(int iClient) {
