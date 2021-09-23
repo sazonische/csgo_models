@@ -8,7 +8,7 @@ public void BuildMain() {
 }
 
 public void OnClientCookiesCached(int iClient) {
-	if(!IsValidClient(iClient))
+	if(IsFakeClient(iClient))
 		return;
 
 	g_sModelSettings.OpenModelsMenu[iClient] = false;
@@ -34,8 +34,6 @@ public void OnClientDisconnect(int iClient) {
 		IntToString(g_sModelSettings.TmodelPos[iClient], szInfo, sizeof szInfo);
 		SetClientCookie(iClient, g_hCookieT, szInfo);
 	}
-	g_sModelSettings.CtModelPos[iClient] = 0;
-	g_sModelSettings.TmodelPos[iClient] = 0;
 }
 
 public Action Command_Say(int iClient, const char[] command, int argc) {
