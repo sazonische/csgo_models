@@ -1,4 +1,4 @@
-ArrayList g_aModelslist[4];
+ArrayList g_aTeamsModelslist[4];
 Menu g_ModelsMenu = null;
 ConVar mp_forcecamera, mp_playercashawards, mp_teamcashawards, g_CvarSkinSelectTime = null, g_CvarBuyZoneOnly = null, g_CvarMapChangeReloadCfg = null;
 Handle g_hSkinTimer = null, g_hCookieT = null, g_hCookieCT = null;
@@ -22,15 +22,15 @@ enum struct ModelSettings {
 	bool OpenModelsMenu[MAXPLAYERS + 1];
 
 	ArrayList GetModelArrayList(int iTeam) {
-		return g_aModelslist[iTeam];
+		return g_aTeamsModelslist[iTeam];
 	}
 
 	int GetCountTeamModels(int iTeam) {
-		return g_aModelslist[iTeam].Length;
+		return g_aTeamsModelslist[iTeam].Length;
 	}
 
 	bool IsValidModelPos(int iClient, int iTeam) {
-		return (this.CtModelPos[iClient] <= (g_aModelslist[iTeam].Length -1));
+		return (this.CtModelPos[iClient] <= (g_aTeamsModelslist[iTeam].Length -1));
 	}
 
 	int GetModelListPos(int iTeam, int iClient) {

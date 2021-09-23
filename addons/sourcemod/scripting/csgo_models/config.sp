@@ -29,8 +29,8 @@ public void ReadModelsCfg() {
 	
 	char[] szConfigsFile = new char[PLATFORM_MAX_PATH];
 	FileType ConfigsType;
-	g_aModelslist[CS_TEAM_T].Clear();
-	g_aModelslist[CS_TEAM_CT].Clear();
+	g_aTeamsModelslist[CS_TEAM_T].Clear();
+	g_aTeamsModelslist[CS_TEAM_CT].Clear();
 	while(ConfigsDirectory.GetNext(szConfigsFile, PLATFORM_MAX_PATH, ConfigsType)) {
 		if(ConfigsType != FileType_File || !StrEqual(szConfigsFile[strlen(szConfigsFile)-4], ".cfg", false))
 			continue;
@@ -91,7 +91,7 @@ public void ReadConfigList(const char[] sPath) {
 			ModelsConfig.GetString("flags", sFlags, sizeof sFlags);
 			info.flags = ReadFlagString(sFlags);
 			info.vip = view_as<bool>(ModelsConfig.GetNum("vip", 0));
-			g_aModelslist[CS_TEAM_T].PushArray(info);
+			g_aTeamsModelslist[CS_TEAM_T].PushArray(info);
 		} while (ModelsConfig.GotoNextKey());
 	}
 
@@ -109,7 +109,7 @@ public void ReadConfigList(const char[] sPath) {
 			ModelsConfig.GetString("flags", sFlags, sizeof sFlags);
 			info.flags = ReadFlagString(sFlags);
 			info.vip = view_as<bool>(ModelsConfig.GetNum("vip", 0));
-			g_aModelslist[CS_TEAM_CT].PushArray(info);
+			g_aTeamsModelslist[CS_TEAM_CT].PushArray(info);
 		} while (ModelsConfig.GotoNextKey());
 	}
 	delete ModelsConfig;
@@ -118,5 +118,5 @@ public void ReadConfigList(const char[] sPath) {
 public void AddArrayStandardInfo(int iTeam) {
 	Modelslist info;
 	info.name = "Standard";info.model_player = "";info.arms = "";info.vo_prefix = "";info.flags = 0;
-	g_aModelslist[iTeam].ShiftUp(0); g_aModelslist[iTeam].SetArray(0,info);
+	g_aTeamsModelslist[iTeam].ShiftUp(0); g_aTeamsModelslist[iTeam].SetArray(0,info);
 }

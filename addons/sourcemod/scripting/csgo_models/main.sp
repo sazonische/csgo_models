@@ -34,13 +34,28 @@ public void OnClientDisconnect(int iClient) {
 		IntToString(g_sModelSettings.TmodelPos[iClient], szInfo, sizeof szInfo);
 		SetClientCookie(iClient, g_hCookieT, szInfo);
 	}
+	g_sModelSettings.CtModelPos[iClient] = 0;
+	g_sModelSettings.TmodelPos[iClient] = 0;
 }
 
 public Action Command_Say(int iClient, const char[] command, int argc) {
 	if(!IsValidClient(iClient))
 		return Plugin_Continue;
 
-	static char sModelsMenuCmds[][] = {".models","!models","models"};
+	static char sModelsMenuCmds[][] = {
+		".models",
+		"!models",
+		"models",
+		".model",
+		"!model",
+		"model",
+		".agent",
+		"!agent",
+		"agent",
+		".agents",
+		"!agents",
+		"agents",
+	};
 
 	char sBuffer[24];
 	GetCmdArgString(sBuffer, sizeof(sBuffer));

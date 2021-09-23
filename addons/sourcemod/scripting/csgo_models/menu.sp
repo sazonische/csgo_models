@@ -1,7 +1,7 @@
 
 void DisplayModelsMenu(int iClient, int iTime) {
 	if(!g_ModelsMenu) {
-		g_ModelsMenu = new Menu(ModelsMenu, MenuAction_Display | MenuAction_DisplayItem);
+		g_ModelsMenu = new Menu(ModelsMenu, MenuAction_Display | MenuAction_DisplayItem | MenuAction_End | MenuAction_Cancel);
 		g_ModelsMenu.ExitButton = true;
 		g_ModelsMenu.AddItem("", "");
 		g_ModelsMenu.AddItem("", "");
@@ -32,6 +32,9 @@ int ModelsMenu(Menu menu, MenuAction action, int iClient, int iParam) {
 			else
 				FormatEx(sMenuBuffer, sizeof(sMenuBuffer), "%T\n%s", "Models menu", iClient, info.name);
 			menu.SetTitle(sMenuBuffer);
+
+			if(info.flags && !(GetUserFlagBits(iClient) & info.flags))
+				PrintCenterText(iClient, "%t", "Only to privileged players");
 		}
 		case MenuAction_DisplayItem: {
 			g_sModelSettings.SetThirdPersonView(iClient, true);
@@ -67,9 +70,6 @@ int ModelsMenu(Menu menu, MenuAction action, int iClient, int iParam) {
 				case 1: iActiveModelPos = --iActiveModelPos <= -1 ? (g_sModelSettings.GetCountTeamModels(iClientTeam) -1) : iActiveModelPos;
 				case 2: iActiveModelPos = 0;
 			}
-
-			if(info.flags && !(GetUserFlagBits(iClient) & info.flags))
-				PrintCenterText(iClient, "%t", "Only to privileged players");
 
 			g_sModelSettings.SetModelListPos(iClientTeam, iClient, iActiveModelPos);
 			g_sModelSettings.RebuildModel(iClient);

@@ -30,8 +30,8 @@ public void OnPluginStart() {
 
 	LoadTranslations("csgo_models.phrases");
 	LoadTranslations("csgo_models_names.phrases");
-	g_aModelslist[CS_TEAM_T] = new ArrayList(sizeof(Modelslist));
-	g_aModelslist[CS_TEAM_CT] = new ArrayList(sizeof(Modelslist));
+	g_aTeamsModelslist[CS_TEAM_T] = new ArrayList(sizeof(Modelslist));
+	g_aTeamsModelslist[CS_TEAM_CT] = new ArrayList(sizeof(Modelslist));
 	BuildMain();
 
 #if ARMS_FIX
