@@ -11,7 +11,7 @@ enum struct Modelslist {
 	char name[PLATFORM_MAX_PATH];
 	char model_player[PLATFORM_MAX_PATH];
 	char arms[PLATFORM_MAX_PATH];
-	char vo_prefix[16];
+	char vo_prefix[64];
 	int flags;
 	bool vip;
 }
