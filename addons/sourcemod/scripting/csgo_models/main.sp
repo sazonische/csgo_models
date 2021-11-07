@@ -118,45 +118,45 @@ public Action Event_ExitBuyzone(Event event, const char[] name, bool dontBroadca
 }
 
 public Action MdlCh_PlayerSpawn(int iClient, bool bCustom, char[] sModel, int iModelMaxlen, char[] sVoPrefix, int iPrefixMaxlen) {
-	if(IsFakeClient(iClient))	
+	if (IsFakeClient(iClient))	
 		return Plugin_Continue;
 
 	Modelslist info;
 	int iClientTeam = GetClientTeam(iClient);
 	int iActiveModelPos = g_sModelSettings.GetModelListPos(iClientTeam,iClient);
-	if(!g_sModelSettings.IsValidModelPos(iClient,iClientTeam))
+	if (!g_sModelSettings.IsValidModelPos(iClient,iClientTeam))
 		iActiveModelPos = 0;
 
 	g_sModelSettings.GetModelArrayList(iClientTeam).GetArray(iActiveModelPos, info);
 
-	if(bCustom && !info.model_player[0])
+	if (bCustom && !info.model_player[0])
 		return Plugin_Continue;
 
-	if(iClientTeam >= 2) {
-		if(info.model_player[0])
+	if (iClientTeam >= 2) {
+		if (info.model_player[0])
 			strcopy(sModel, iModelMaxlen, info.model_player);
-		if(info.vo_prefix[0])
+		if (info.vo_prefix[0])
 			strcopy(sVoPrefix, iPrefixMaxlen, info.vo_prefix);	
 #if ARMS_FIX				
-		if(info.arms[0]) {
-			if(GetEntPropEnt(iClient, Prop_Send, "m_hMyWearables") != -1) {
-				info.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle.mdl";
-				PrintCenterText(iClient, "%t", "Del arms announce");
-			}
-			Address pPlayerViewmodelArmConfig = view_as<Address>(SDKCall(g_hGetPlayerViewmodelArmConfigForPlayerModel, info.arms));
+		int iMyWearables = GetEntPropEnt(iClient, Prop_Send, "m_hMyWearables");
+		if (iMyWearables == -1) {
+			Address pPlayerViewmodelArmConfig = view_as<Address>(SDKCall(g_hGetPlayerViewmodelArmConfigForPlayerModel, info.model_player));
 			Address pAssociatedGloveModel = view_as<Address>(LoadFromAddress(pPlayerViewmodelArmConfig + view_as<Address>(8), NumberType_Int32));
-			if(LoadFromAddress(pAssociatedGloveModel, NumberType_Int8) == 0)
-				SetEntPropString(iClient, Prop_Send, "m_szArmsModel", info.arms);
-		} else {
-			SetEntPropString(iClient, Prop_Send, "m_szArmsModel", "");
+			if(LoadFromAddress(pAssociatedGloveModel, NumberType_Int8) == 0 && info.arms[0] == EOS) {
+				info.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_black.mdl";
+			}
+		} else if (info.arms[0]) {
+			AcceptEntityInput(iMyWearables, "KillHierarchy");
 		}
+
+		SetEntPropString(iClient, Prop_Send, "m_szArmsModel", info.arms);	
 #endif
 	}
 
 	return Plugin_Changed;
 }
 
-#if ARMS_FIX				
+#if ARMS_FIX
 public void LoadArmsReplace() {
 	GameData hData = new GameData("CustomPlayerArms.games");
 	
@@ -179,7 +179,7 @@ public void LoadArmsReplace() {
 		
 		if(!g_hGetPlayerViewmodelArmConfigForPlayerModel)
 			SetFailState("Failed to create a call GetPlayerViewmodelArmConfigForPlayerModel");
-		
+
 		delete hData;
 	} else {
 		SetFailState("Failed to load GameData");
