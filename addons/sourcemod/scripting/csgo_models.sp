@@ -19,7 +19,7 @@ public Plugin myinfo =  {
 	name = "CS:GO Player Models (mmcs.pro)",
 	author = "SAZONISCHE",
 	description = "CS:GO Player Models",
-	version = "2.1",
+	version = "2.2",
 	url = "mmcs.pro"
 };
 
