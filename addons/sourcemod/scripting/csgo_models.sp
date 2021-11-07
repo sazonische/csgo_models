@@ -54,4 +54,7 @@ public void OnPluginStart() {
 
 public void OnMapStart() {
 	ReadModelsCfg();
+	#if ARMS_FIX				
+		PrecacheModel("models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_black.mdl");
+	#endif	
 }
