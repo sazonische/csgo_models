@@ -143,7 +143,7 @@ public Action MdlCh_PlayerSpawn(int iClient, bool bCustom, char[] sModel, int iM
 			Address pPlayerViewmodelArmConfig = view_as<Address>(SDKCall(g_hGetPlayerViewmodelArmConfigForPlayerModel, info.model_player));
 			Address pAssociatedGloveModel = view_as<Address>(LoadFromAddress(pPlayerViewmodelArmConfig + view_as<Address>(8), NumberType_Int32));
 			if(LoadFromAddress(pAssociatedGloveModel, NumberType_Int8) == 0 && info.arms[0] == EOS) {
-				info.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_black.mdl";
+				info.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle.mdl";
 			}
 		} else if (info.arms[0]) {
 			AcceptEntityInput(iMyWearables, "KillHierarchy");
