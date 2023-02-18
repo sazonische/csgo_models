@@ -92,6 +92,7 @@ public Action Event_RoundPreStart(Event event, const char[] name, bool dontBroad
 			delete g_hSkinTimer;
 		g_hSkinTimer = CreateTimer(g_CvarSkinSelectTime.FloatValue, Timer_DisableSkin);
 	}
+	return Plugin_Continue;
 }
 
 public Action Timer_DisableSkin(Handle timer) {
@@ -189,6 +190,7 @@ public void LoadArmsReplace() {
 
 public Action ReloadModels(int client, int args) {
 	ReadModelsCfg();
+	return Plugin_Continue;
 }
 
 stock bool IsValidClient(int client) {
