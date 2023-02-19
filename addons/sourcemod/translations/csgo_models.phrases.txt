@@ -2,61 +2,67 @@
 {
 	"Models menu"
 	{
-                "tr"		"Model Menü"
+		"tr"		"Model Menü"
 		"en"		"Models menu"
 		"ru"		"Меню моделей"		
 	}
 	"Select model"
 	{
-                "tr"		"Model Seç"
+		"tr"		"Model Seç"
 		"en"		"Select model"
 		"ru"		"Выбрать модель"		
 	}
 	"Next"
 	{
-                "tr"		"Sonraki"
+		"tr"		"Sonraki"
 		"en"		"Next"
 		"ru"		"Далее"		
 	}
 	"Back"
 	{
-                "tr"            "Geri Dön"
+		"tr"		"Geri Dön"
 		"en"		"Back"
-		"ru"		"Назад"		
+		"ru"		"Назад"
 	}
 	"Remove model"
-	{       
-                "tr"            "Varsayılan model"
+	{
+		"tr"		"Varsayılan model"
 		"en"		"The default model."
-		"ru"		"Модель по умолчанию."		
+		"ru"		"Модель по умолчанию."
 	}
 	"Only to privileged players"
 	{
-                "tr"            "Bu model yalnızca ayrıcalıklı oyuncular tarafından kullanılabilir"
+		"tr"		"Bu model yalnızca ayrıcalıklı oyuncular tarafından kullanılabilir"
 		"en"		"The model is available only to privileged players."
 		"ru"		"Модель доступна только привилегированным игрокам."		
 	}
+	"Only to VIP players"
+	{
+		"tr"		"Bu model yalnızca VIP oyuncular tarafından kullanılabilir"
+		"en"		"The model is available only to VIP players."
+		"ru"		"Модель доступна только ВИП игрокам."
+	}
 	"Only available in the purchase area"
 	{
-                "tr"		"Model seçimi yalnızca satın alma alanında kullanılabilir."
+		"tr"		"Model seçimi yalnızca satın alma alanında kullanılabilir."
 		"en"		"Model selection is only available in the purchase area."
 		"ru"		"Выбор модели доступен только в зоне закупки."		
 	}
 	"Time to choose is up"
 	{
-                "tr"		"Model seçmek için süreniz doldu."
+		"tr"		"Model seçmek için süreniz doldu."
 		"en"		"Time to choose a skin is up."
 		"ru"		"Время на выбор скина вышло."		
 	}
 	"Del arms announce"
 	{
-                "tr"		"Modelin eldivenleri çalışması için envanterdeki eldivenleri çıkarın."
+		"tr"		"Modelin eldivenleri çalışması için envanterdeki eldivenleri çıkarın."
 		"en"		"Turn off the gloves in the inventory for the model's gloves to work."
 		"ru"		"Отключите перчатки в инвентаре для работы перчаток модели."		
 	}
 	"Only alive select nodel"
 	{
-                "tr"		"Model seçimi sadece canlı oyuncular tarafından kullanılabilir."
+		"tr"		"Model seçimi sadece canlı oyuncular tarafından kullanılabilir."
 		"en"		"Model selection is only available to live players."
 		"ru"		"Выбор модели доступен только живым игрокам."		
 	}
