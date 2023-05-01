@@ -29,8 +29,8 @@ public void ReadModelsCfg() {
 	
 	char[] configsFile = new char[PLATFORM_MAX_PATH];
 	FileType configsType;
-	g_teamsModelslist[CS_TEAM_T].Clear();
-	g_teamsModelslist[CS_TEAM_CT].Clear();
+	g_teamsModelsList[CS_TEAM_T].Clear();
+	g_teamsModelsList[CS_TEAM_CT].Clear();
 	while (configsDirectory.GetNext(configsFile, PLATFORM_MAX_PATH, configsType)) {
 		if (configsType != FileType_File || !StrEqual(configsFile[strlen(configsFile)-4], ".cfg", false))
 			continue;
@@ -96,18 +96,18 @@ public void ReadConfigList(const char[] path) {
 }
 
 public void ReadConfigModel(KeyValues modelsConfig, int team) {
-	Modelslist modelslistData;
+	ModelsList modelsListData;
 	do {
-		modelsConfig.GetSectionName(modelslistData.name, sizeof modelslistData.name);
-		modelsConfig.GetString("model_player", modelslistData.modelPlayer, sizeof modelslistData.modelPlayer);
-		modelsConfig.GetString("vo_prefix", modelslistData.voPrefix, sizeof modelslistData.voPrefix);
-		modelsConfig.GetString("arms", modelslistData.arms, sizeof modelslistData.arms);
-		if (modelslistData.arms[0] && !IsModelPrecached(modelslistData.arms))
-			PrecacheModel(modelslistData.arms);
+		modelsConfig.GetSectionName(modelsListData.name, sizeof modelsListData.name);
+		modelsConfig.GetString("model_player", modelsListData.modelPlayer, sizeof modelsListData.modelPlayer);
+		modelsConfig.GetString("vo_prefix", modelsListData.voPrefix, sizeof modelsListData.voPrefix);
+		modelsConfig.GetString("arms", modelsListData.arms, sizeof modelsListData.arms);
+		if (modelsListData.arms[0] && !IsModelPrecached(modelsListData.arms))
+			PrecacheModel(modelsListData.arms);
 		char flags[16];
 		modelsConfig.GetString("flags", flags, sizeof flags);
-		modelslistData.flags = ReadFlagString(flags);
-		modelslistData.vip = !!modelsConfig.GetNum("vip", 0);
-		g_teamsModelslist[team].PushArray(modelslistData);
+		modelsListData.flags = ReadFlagString(flags);
+		modelsListData.vip = !!modelsConfig.GetNum("vip", 0);
+		g_teamsModelsList[team].PushArray(modelsListData);
 	} while (modelsConfig.GotoNextKey());
 }

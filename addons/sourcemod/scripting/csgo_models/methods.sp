@@ -1,38 +1,52 @@
 methodmap Gameplay {
-	public static ArrayList GetModelArrayList(int team) {
-		return g_teamsModelslist[team];
-	}
-
-	public static int GetCountTeamModels(int team) {
-		return g_teamsModelslist[team].Length;
+	public static bool IsValidModelPos(int team, int modelPos) {
+		return modelPos <= (g_teamsModelsList[team].Length -1);
 	}
 
 	public static void AddStandardModelIndex(int team) {
-		Modelslist modelslistData;
-		modelslistData.name = "Standard";
-		modelslistData.modelPlayer = "";
-		modelslistData.arms = "";
-		modelslistData.voPrefix = "";
-		modelslistData.flags = 0;
-		g_teamsModelslist[team].ShiftUp(0); 
-		g_teamsModelslist[team].SetArray(0,modelslistData);
+		ModelsList modelsListData;
+		modelsListData.name = "Standard";
+		modelsListData.modelPlayer = "";
+		modelsListData.arms = "";
+		modelsListData.voPrefix = "";
+		modelsListData.flags = 0;
+		g_teamsModelsList[team].ShiftUp(0); 
+		g_teamsModelsList[team].SetArray(0,modelsListData);
 	}
 }
 
 methodmap Client {
-	public static int GetModelListPos(int team, int client) {
-		return (team == CS_TEAM_CT) ? g_clientModelSettings.ctModelPos[client] : g_clientModelSettings.tModelPos[client];
+	public static int GetModelListPos(int client, int team) {
+		char steamId[10];
+		ClientModelCacheMask data;
+		IntToString(GetSteamAccountID(client), steamId, sizeof steamId);
+		g_clientModelSettings.modelsCache.GetArray(steamId, data, sizeof ClientModelCacheMask);
+		return (team == CS_TEAM_CT) ? data.ctModelPos : data.tModelPos;
 	}
 
-	public static void SetModelListPos(int team, int client, int iPos) {
-		if (team == CS_TEAM_CT)
-			g_clientModelSettings.ctModelPos[client] = iPos;
-		else
-			g_clientModelSettings.tModelPos[client] = iPos;
+	public static void SetModelListPos(int client, int team, int iPos) {
+		char steamId[10];
+		ClientModelCacheMask data;
+		IntToString(GetSteamAccountID(client), steamId, sizeof steamId);
+		g_clientModelSettings.modelsCache.GetArray(steamId, data, sizeof ClientModelCacheMask);
+		team == CS_TEAM_CT ? data.ctModelPos = iPos : data.tModelPos = iPos;
+		g_clientModelSettings.modelsCache.SetArray(steamId, data, sizeof ClientModelCacheMask);
 	}
 
-	public static bool IsValidModelPos(int client, int team) {
-		return (g_clientModelSettings.ctModelPos[client] <= (g_teamsModelslist[team].Length -1));
+	public static bool IsHaveRightsToTheModel(int client, ModelsList modelsListData) {
+		if (modelsListData.flags && (GetUserFlagBits(client) & modelsListData.flags)) {
+			return true;
+		}
+
+		if (g_vipCoreExist && modelsListData.vip && VIP_IsClientVIP(client) && VIP_IsClientFeatureUse(client, g_feature)) {
+			return true;
+		}
+
+		if (!modelsListData.flags && !modelsListData.vip) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static void SetThirdPerson(int client, bool draw) {
@@ -73,13 +87,13 @@ methodmap Client {
 		GetClientAbsOrigin(client, origin);
 		GetClientAbsAngles(client, angles);
 		int money = GetEntProp(client, Prop_Send, "m_iAccount");
-		int health = GetEntProp(client,Prop_Send,"m_iHealth");
-		int armorValue = GetEntProp(client,Prop_Send,"m_ArmorValue");
-		int hasHelmet = GetEntProp(client,Prop_Send,"m_bHasHelmet");
+		int health = GetEntProp(client, Prop_Send, "m_iHealth");
+		int armorValue = GetEntProp(client, Prop_Send, "m_ArmorValue");
+		int hasHelmet = GetEntProp(client, Prop_Send, "m_bHasHelmet");
 		CS_RespawnPlayer(client);
 		SetEntProp(client, Prop_Send, "m_iAccount", money);
-		SetEntProp(client,Prop_Send,"m_iHealth", health);
-		SetEntProp(client,Prop_Send,"m_ArmorValue", armorValue);
+		SetEntProp(client, Prop_Send, "m_iHealth", health);
+		SetEntProp(client, Prop_Send, "m_ArmorValue", armorValue);
 		SetEntProp(client, Prop_Send, "m_bHasHelmet", hasHelmet);
 		TeleportEntity(client, origin, angles);
 	}

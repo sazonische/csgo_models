@@ -1,6 +1,7 @@
 public void MainInit() {
-	g_teamsModelslist[CS_TEAM_T] = new ArrayList(sizeof Modelslist);
-	g_teamsModelslist[CS_TEAM_CT] = new ArrayList(sizeof Modelslist);
+	g_teamsModelsList[CS_TEAM_T] = new ArrayList(sizeof ModelsList);
+	g_teamsModelsList[CS_TEAM_CT] = new ArrayList(sizeof ModelsList);
+	g_clientModelSettings.modelsCache = new StringMap();
 
 	g_cookieT = RegClientCookie("sm_model_id_t", "Terrorists Skins", CookieAccess_Private);
 	g_cookieCT = RegClientCookie("sm_model_id_ct", "Counter-Terrorists Skins", CookieAccess_Private);
@@ -11,7 +12,7 @@ public void MainInit() {
 	AddCommandListener(Command_Say, "say_team");
 	HookEvent("round_prestart", Event_RoundPreStart, EventHookMode_PostNoCopy);
 	HookEvent("player_death", Event_PlayerDeath, EventHookMode_Pre);
-	HookEvent("exit_buyzone", Event_ExitBuyzone, EventHookMode_Pre);
+	HookEvent("exit_buyzone", Event_ExitBuyZone, EventHookMode_Pre);
 }
 
 public void VIP_OnVIPLoaded() {
@@ -24,12 +25,19 @@ public void OnClientCookiesCached(int client) {
 	}
 
 	g_clientModelSettings.openModelsMenu[client] = false;
+	char cookieData[PLATFORM_MAX_PATH];
 
-	char modelslistData[PLATFORM_MAX_PATH];
-	GetClientCookie(client, g_cookieCT, modelslistData, sizeof modelslistData);
-	g_clientModelSettings.ctModelPos[client] = modelslistData[0] ? StringToInt(modelslistData) : 0;
-	GetClientCookie(client, g_cookieT, modelslistData, sizeof modelslistData);
-	g_clientModelSettings.tModelPos[client] = modelslistData[0] ? StringToInt(modelslistData) : 0;
+	if (!Client.GetModelListPos(client, CS_TEAM_CT)) {
+		GetClientCookie(client, g_cookieCT, cookieData, sizeof cookieData);
+		int ctModelPos = StringToInt(cookieData);
+		Client.SetModelListPos(client, CS_TEAM_CT, Gameplay.IsValidModelPos(CS_TEAM_CT, ctModelPos) ? ctModelPos : 0);
+	}
+
+	if (!Client.GetModelListPos(client, CS_TEAM_T)) {
+		GetClientCookie(client, g_cookieT, cookieData, sizeof cookieData);
+		int tModelPos = StringToInt(cookieData);
+		Client.SetModelListPos(client, CS_TEAM_T, Gameplay.IsValidModelPos(CS_TEAM_T, tModelPos) ? tModelPos : 0);
+	}
 }
 
 public void OnClientDisconnect(int client) {
@@ -37,15 +45,18 @@ public void OnClientDisconnect(int client) {
 		return;
 	}
 
-	char modelslistData[PLATFORM_MAX_PATH];
-	if (g_clientModelSettings.ctModelPos[client]) {
-		IntToString(g_clientModelSettings.ctModelPos[client], modelslistData, sizeof modelslistData);
-		SetClientCookie(client, g_cookieCT, modelslistData);
+	char modelsListData[PLATFORM_MAX_PATH];
+
+	int ctModelPos = Client.GetModelListPos(client, CS_TEAM_CT);
+	if (ctModelPos) {
+		IntToString(ctModelPos, modelsListData, sizeof modelsListData);
+		SetClientCookie(client, g_cookieCT, modelsListData);
 	}
 
-	if (g_clientModelSettings.tModelPos[client]) {
-		IntToString(g_clientModelSettings.tModelPos[client], modelslistData, sizeof modelslistData);
-		SetClientCookie(client, g_cookieT, modelslistData);
+	int tModelPos = Client.GetModelListPos(client, CS_TEAM_T);
+	if (tModelPos) {
+		IntToString(tModelPos, modelsListData, sizeof modelsListData);
+		SetClientCookie(client, g_cookieT, modelsListData);
 	}
 }
 
@@ -118,7 +129,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 	return Plugin_Continue;
 }
 
-public Action Event_ExitBuyzone(Event event, const char[] name, bool dontBroadcast) {
+public Action Event_ExitBuyZone(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if (sm_buyzone_only.BoolValue && IsValidClient(client) && g_clientModelSettings.openModelsMenu[client]) {
 		CancelClientMenu(client);
@@ -126,46 +137,51 @@ public Action Event_ExitBuyzone(Event event, const char[] name, bool dontBroadca
 	return Plugin_Continue;
 }
 
-public Action MdlCh_PlayerSpawn(int client, bool bCustom, char[] sModel, int iModelMaxlen, char[] sVoPrefix, int iPrefixMaxlen) {
+public Action MdlCh_PlayerSpawn(int client, bool custom, char[] model, int modelMaxLen, char[] voPrefix, int prefixMaxLen) {
 	if (!IsValidClient(client) || GetEntProp(client, Prop_Send, "m_iPlayerState") != 0) {
 		return Plugin_Continue;
 	}
 
-	Modelslist modelslistData;
 	int clientTeam = GetClientTeam(client);
-	int modelPos = Client.GetModelListPos(clientTeam,client);
-	if (!Client.IsValidModelPos(client,clientTeam)) {
+	int modelPos = Client.GetModelListPos(client, clientTeam);
+	if (!Gameplay.IsValidModelPos(clientTeam, modelPos)) {
 		modelPos = 0;
 	}
 
-	Gameplay.GetModelArrayList(clientTeam).GetArray(modelPos, modelslistData);
+	ModelsList modelsListData;
+	g_teamsModelsList[clientTeam].GetArray(modelPos, modelsListData);
 
-	if (bCustom && !modelslistData.modelPlayer[0]) {
+	if (custom && !modelsListData.modelPlayer[0]) {
+		return Plugin_Continue;
+	}
+
+	if (!Client.IsHaveRightsToTheModel(client, modelsListData)) {
+		Client.SetModelListPos(client, clientTeam, 0);
 		return Plugin_Continue;
 	}
 
 	if (clientTeam >= 2) {
-		if (modelslistData.modelPlayer[0]) {
-			strcopy(sModel, iModelMaxlen, modelslistData.modelPlayer);
+		if (modelsListData.modelPlayer[0]) {
+			strcopy(model, modelMaxLen, modelsListData.modelPlayer);
 		}
 
-		if (modelslistData.voPrefix[0]) {
-			strcopy(sVoPrefix, iPrefixMaxlen, modelslistData.voPrefix);	
+		if (modelsListData.voPrefix[0]) {
+			strcopy(voPrefix, prefixMaxLen, modelsListData.voPrefix);	
 		}
 
 #if ARMS_FIX
 		int myWearables = GetEntPropEnt(client, Prop_Send, "m_hMyWearables");
 		if (myWearables == -1) {
-			Address playerViewmodelArmConfig = view_as<Address>(SDKCall(g_getPlayerViewmodelArmConfigForPlayerModel, modelslistData.modelPlayer));
+			Address playerViewmodelArmConfig = view_as<Address>(SDKCall(g_getPlayerViewModelArmConfigForPlayerModel, modelsListData.modelPlayer));
 			Address associatedGloveModel = view_as<Address>(LoadFromAddress(playerViewmodelArmConfig + view_as<Address>(8), NumberType_Int32));
-			if (LoadFromAddress(associatedGloveModel, NumberType_Int8) == 0 && modelslistData.arms[0] == EOS) {
-				modelslistData.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_blue.mdl";
+			if (LoadFromAddress(associatedGloveModel, NumberType_Int8) == 0 && modelsListData.arms[0] == EOS) {
+				modelsListData.arms = "models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_blue.mdl";
 			}
-		} else if (modelslistData.arms[0]) {
+		} else if (modelsListData.arms[0]) {
 			AcceptEntityInput(myWearables, "KillHierarchy");
 		}
 
-		SetEntPropString(client, Prop_Send, "m_szArmsModel", modelslistData.arms);	
+		SetEntPropString(client, Prop_Send, "m_szArmsModel", modelsListData.arms);	
 #endif
 	}
 
@@ -192,9 +208,9 @@ public void LoadArmsReplace() {
 		PrepSDKCall_SetFromConf(data, SDKConf_Signature, "GetPlayerViewmodelArmConfigForPlayerModel");
 		PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
 		PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-		g_getPlayerViewmodelArmConfigForPlayerModel = EndPrepSDKCall();
+		g_getPlayerViewModelArmConfigForPlayerModel = EndPrepSDKCall();
 		
-		if (!g_getPlayerViewmodelArmConfigForPlayerModel) {
+		if (!g_getPlayerViewModelArmConfigForPlayerModel) {
 			SetFailState("Failed to create a call GetPlayerViewmodelArmConfigForPlayerModel");
 		}
 

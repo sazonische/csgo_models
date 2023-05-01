@@ -17,30 +17,31 @@ int ModelsMenu(Menu menu, MenuAction action, int client, int param) {
 	if (action == MenuAction_End || !IsClientInGame(client))
 		return 0;
 
-	Modelslist modelslistData;
+	ModelsList modelsListData;
 	int clientTeam = GetClientTeam(client);
-	int modelPos = Client.GetModelListPos(clientTeam,client);
-	if (!Client.IsValidModelPos(client,clientTeam))
+	int modelPos = Client.GetModelListPos(client, clientTeam);
+	if (!Gameplay.IsValidModelPos(clientTeam, modelPos)) {
 		modelPos = 0;
+	}
 
-	Gameplay.GetModelArrayList(clientTeam).GetArray(modelPos, modelslistData);
+	g_teamsModelsList[clientTeam].GetArray(modelPos, modelsListData);
 
 	switch (action) {
 		case MenuAction_Display: {
 			static char prefix[32];
-			FormatEx(prefix, sizeof prefix, "%s%s", modelslistData.flags ? "[ADMIN]" : "", (g_vipCoreExist && modelslistData.vip) ? "[VIP]" : "");
-			if (TranslationPhraseExists(modelslistData.name)) {
-				FormatEx(menuBuffer, sizeof menuBuffer, "%T\n%T %s", "Models menu", client, modelslistData.name, client, prefix);
+			FormatEx(prefix, sizeof prefix, "%s%s", modelsListData.flags ? "[ADMIN]" : "", (g_vipCoreExist && modelsListData.vip) ? "[VIP]" : "");
+			if (TranslationPhraseExists(modelsListData.name)) {
+				FormatEx(menuBuffer, sizeof menuBuffer, "%T\n%T %s", "Models menu", client, modelsListData.name, client, prefix);
 			} else {
-				FormatEx(menuBuffer, sizeof menuBuffer, "%T\n%s %s", "Models menu", client, modelslistData.name, prefix);
+				FormatEx(menuBuffer, sizeof menuBuffer, "%T\n%s %s", "Models menu", client, modelsListData.name, prefix);
 			}
 			menu.SetTitle(menuBuffer);
 
-			if (modelslistData.flags && !(GetUserFlagBits(client) & modelslistData.flags)) {
+			if (modelsListData.flags && !(GetUserFlagBits(client) & modelsListData.flags)) {
 				PrintCenterText(client, "%t", "Only to privileged players");
 			}
 
-			if (g_vipCoreExist && modelslistData.vip && !VIP_IsClientVIP(client) && !VIP_IsClientFeatureUse(client, g_feature)) {
+			if (g_vipCoreExist && modelsListData.vip && !VIP_IsClientVIP(client) && !VIP_IsClientFeatureUse(client, g_feature)) {
 				PrintCenterText(client, "%t", "Only to VIP players");
 			}
 		}
@@ -48,7 +49,7 @@ int ModelsMenu(Menu menu, MenuAction action, int client, int param) {
 			Client.SetThirdPerson(client, true);
 			switch (param) {
 				case 0: {
-					FormatEx(menuBuffer, sizeof menuBuffer, "%T", modelslistData.modelPlayer[0] ? "Next" : "Select model", client);
+					FormatEx(menuBuffer, sizeof menuBuffer, "%T", modelsListData.modelPlayer[0] ? "Next" : "Select model", client);
 					return RedrawMenuItem(menuBuffer);
 				}
 				case 1: {
@@ -63,22 +64,9 @@ int ModelsMenu(Menu menu, MenuAction action, int client, int param) {
 			return 0;
 		}
 		case MenuAction_Cancel: {
-			bool resetModel = true;
-			if (modelslistData.flags && (GetUserFlagBits(client) & modelslistData.flags)) {
-				resetModel = false;
-			}
-
-			if (g_vipCoreExist && modelslistData.vip && VIP_IsClientVIP(client) && VIP_IsClientFeatureUse(client, g_feature)) {
-				resetModel = false;
-			}
-
-			if (!modelslistData.flags && !modelslistData.vip) {
-				resetModel = false;
-			}
-
-			if (resetModel) {
-				PrintCenterText(client, "%t", modelslistData.flags ? "Only to VIP players" : "Only to VIP players");
-				Client.SetModelListPos(clientTeam, client, 0);
+			if (!Client.IsHaveRightsToTheModel(client, modelsListData)) {
+				PrintCenterText(client, "%t", modelsListData.flags ? "Only to privileged players" : "Only to VIP players");
+				Client.SetModelListPos(client, clientTeam, 0);
 				Client.RebuildModel(client);
 			}
 			
@@ -90,12 +78,12 @@ int ModelsMenu(Menu menu, MenuAction action, int client, int param) {
 		}
 		case MenuAction_Select: {
 			switch (param) {
-				case 0: modelPos = ++modelPos >= Gameplay.GetCountTeamModels(clientTeam) ? 0 : modelPos;
-				case 1: modelPos = --modelPos <= -1 ? (Gameplay.GetCountTeamModels(clientTeam) -1) : modelPos;
+				case 0: modelPos = ++modelPos >= g_teamsModelsList[clientTeam].Length ? 0 : modelPos;
+				case 1: modelPos = --modelPos <= -1 ? (g_teamsModelsList[clientTeam].Length -1) : modelPos;
 				case 2: modelPos = 0;
 			}
 
-			Client.SetModelListPos(clientTeam, client, modelPos);
+			Client.SetModelListPos(client, clientTeam, modelPos);
 			Client.RebuildModel(client);
 			DisplayModelsMenu(client, MENU_TIME_FOREVER);
 		}

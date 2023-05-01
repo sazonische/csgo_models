@@ -25,7 +25,7 @@ public Plugin myinfo =  {
 	name = "CS:GO Player Models (mmcs.pro)",
 	author = "SAZONISCHE",
 	description = "CS:GO Player Models",
-	version = "3.0",
+	version = "3.1",
 	url = "mmcs.pro"
 };
 
@@ -46,6 +46,7 @@ public void OnPluginStart() {
 
 public void OnMapStart() {
 	ReadModelsCfg();
+	g_clientModelSettings.modelsCache.Clear();
 #if ARMS_FIX
 	PrecacheModel("models/weapons/v_models/arms/glove_hardknuckle/v_glove_hardknuckle_blue.mdl");
 #endif
