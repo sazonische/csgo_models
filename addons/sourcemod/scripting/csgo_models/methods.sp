@@ -29,7 +29,11 @@ methodmap Client {
 		ClientModelCacheMask data;
 		IntToString(GetSteamAccountID(client), steamId, sizeof steamId);
 		g_clientModelSettings.modelsCache.GetArray(steamId, data, sizeof ClientModelCacheMask);
-		team == CS_TEAM_CT ? data.ctModelPos = iPos : data.tModelPos = iPos;
+		if (team == CS_TEAM_CT) {
+			data.ctModelPos = iPos;
+		} else {
+			data.tModelPos = iPos;
+		}
 		g_clientModelSettings.modelsCache.SetArray(steamId, data, sizeof ClientModelCacheMask);
 	}
 
